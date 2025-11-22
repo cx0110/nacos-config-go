@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  nacos:
+    image: nacos/nacos-server:latest
+    container_name: nacos-standalone-derby
+    environment:
+      # 单机模式（必须）
+      MODE: standalone
+      
+      # ======== 下面的三个变量请根据你的实际情况修改 ========
+      # Nacos 登录 token（随便填，越长越复杂越好，建议 32~64 位）
+      NACOS_AUTH_TOKEN: your_very_strong_random_token_here_2025
+      
+      # Server 身份标识 Key（默认就是 serverIdentity，自己改也行）
+      NACOS_AUTH_IDENTITY_KEY: serverIdentity
+      
+      # Server 身份标识 Value（默认就是 security，必须和 Key 配套）
+      NACOS_AUTH_IDENTITY_VALUE: security
+      # ========================================================
+      
+      # 下面这些是可选的，默认值已经够用（如果你想改也可以）
+      # JVM 参数（单机 2g 足够）
+      JVM_XMS: 1g
+      JVM_XMX: 1g
+      JVM_XMN: 512m
+      
+      # 时间 zone，国内建议用 Asia/Shanghai
+      TZ: Asia/Shanghai
+    ports:
+      # Web 控制台端口
+      - "8848:8848"
+      # 客户端 gRPC 端口（新版客户端需要）
+      - "9848:9848"
+    restart: unless-stopped
+    # 如果你只是本地测试，可以加个 volume 防止容器删了数据丢失
+    # volumes:
+    #   - ./nacos/logs:/home/nacos/logs
+    #   - ./nacos/data:/home/nacos/data
